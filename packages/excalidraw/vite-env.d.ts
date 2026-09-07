@@ -21,6 +21,9 @@ interface ImportMetaEnv {
 
   VITE_APP_FIREBASE_CONFIG: string;
 
+  // Fork: set to "true" to remove the Excalidraw+ marketing UI.
+  VITE_APP_DISABLE_PLUS?: string;
+
   // whether to disable live reload / HMR. Usuaully what you want to do when
   // debugging Service Workers.
   VITE_APP_DEV_DISABLE_LIVE_RELOAD: string;

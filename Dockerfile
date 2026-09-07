@@ -18,6 +18,11 @@ ARG NODE_ENV=production
 ARG VITE_APP_WS_SERVER_URL
 ENV VITE_APP_WS_SERVER_URL=$VITE_APP_WS_SERVER_URL
 
+# Fork: set to "true" to remove the Excalidraw+ marketing UI from the
+# self-hosted build.
+ARG VITE_APP_DISABLE_PLUS
+ENV VITE_APP_DISABLE_PLUS=$VITE_APP_DISABLE_PLUS
+
 RUN npm_config_target_arch=${TARGETARCH} yarn build:app:docker
 
 FROM nginx:stable-alpine-slim@sha256:2c605dbeab79a6b2a63340474fe58119d0ef95bdc4b1f41df0aa689659b3d13b

@@ -53,10 +53,6 @@ app = typer.Typer(
 )
 
 
-class BuildArgs(BaseModel):
-    VITE_APP_WS_SERVER_URL: str
-
-
 class ClientSource(BaseModel):
     upstream: str
     fork: str
@@ -67,7 +63,7 @@ class ClientSource(BaseModel):
 class ClientConfig(BaseModel):
     tag: str
     source: ClientSource
-    build_args: BuildArgs
+    build_args: dict[str, str]
     port: int
 
 
@@ -132,16 +128,15 @@ def main(
         raise typer.Exit(1)
 
     args = [a for a in ("--no-cache",) if no_cache]
-    cmd = [
-        "docker", "build", *args,
-        f"--build-arg=VITE_APP_WS_SERVER_URL={cfg.client.build_args.VITE_APP_WS_SERVER_URL}",
-        "-t", cfg.client.tag, ".",
-    ]
+    cmd = ["docker", "build", *args]
+    for key, value in cfg.client.build_args.items():
+        cmd.append(f"--build-arg={key}={value}")
+    cmd += ["-t", cfg.client.tag, "."]
     console.print(f"Building [bold]{cfg.client.tag}[/bold] (commit {cfg.client.source.upstream_commit})")
     _run(cmd)
 
     if check:
-        _verify_baked_url(cfg.client.tag, cfg.client.build_args.VITE_APP_WS_SERVER_URL)
+        _verify_baked_url(cfg.client.tag, cfg.client.build_args["VITE_APP_WS_SERVER_URL"])
 
 
 def _verify_baked_url(tag: str, expected: str) -> None:

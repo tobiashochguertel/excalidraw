@@ -57,13 +57,9 @@ app = typer.Typer(
 )
 
 
-class BuildArgs(BaseModel):
-    VITE_APP_WS_SERVER_URL: str
-
-
 class ClientConfig(BaseModel):
     tag: str
-    build_args: BuildArgs
+    build_args: dict[str, str]
 
 
 class RoomConfig(BaseModel):
@@ -91,7 +87,7 @@ def _load_config(cli: Path | None) -> ImagesConfig:
 
 def _check_image(cfg: ImagesConfig) -> bool:
     tag = cfg.client.tag
-    expected = cfg.client.build_args.VITE_APP_WS_SERVER_URL
+    expected = cfg.client.build_args["VITE_APP_WS_SERVER_URL"]
     probe = (
         f'grep -rl "{expected}" /usr/share/nginx/html/assets | head -1; '
         'grep -rl "oss-collab.excalidraw.com" /usr/share/nginx/html/assets | wc -l'

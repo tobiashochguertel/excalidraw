@@ -5,6 +5,7 @@ import { isExcalidrawPlusSignedUser } from "../app_constants";
 
 import { DebugFooter, isVisualDebuggerEnabled } from "./DebugCanvas";
 import { EncryptedIcon } from "./EncryptedIcon";
+import { PlusEnabled } from "./PlusEnabled";
 
 export const AppFooter = React.memo(
   ({ onChange }: { onChange: () => void }) => {
@@ -18,7 +19,11 @@ export const AppFooter = React.memo(
           }}
         >
           {isVisualDebuggerEnabled() && <DebugFooter onChange={onChange} />}
-          {!isExcalidrawPlusSignedUser && <EncryptedIcon />}
+          {!isExcalidrawPlusSignedUser && (
+            <PlusEnabled>
+              <EncryptedIcon />
+            </PlusEnabled>
+          )}
         </div>
       </Footer>
     );
