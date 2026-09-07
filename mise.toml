@@ -1,0 +1,15 @@
+# Excalidraw fork — tasks for building, verifying and syncing the
+# self-hosted deployment. Complex tasks live in ./scripts/ (PEP 723
+# Python scripts); config/images.yaml drives the build.
+
+[tasks.build-image]
+description = "Build the excalidraw:fork-collab client image (config/images.yaml)"
+run = "uv run --script scripts/build-image.py"
+
+[tasks.verify-collab]
+description = "Verify baked collab URL in image + excalidraw-room handshake"
+run = "uv run --script scripts/verify-collab.py"
+
+[tasks.sync-upstream]
+description = "Rebase the fork onto upstream master (only Dockerfile may differ)"
+run = "uv run --script scripts/sync-upstream.py"
