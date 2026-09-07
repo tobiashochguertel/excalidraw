@@ -11,6 +11,13 @@ RUN --mount=type=cache,target=/root/.cache/yarn \
 
 ARG NODE_ENV=production
 
+# Collab server URL, baked in at build time. Vite inlines it and process
+# env wins over .env.production (which defaults to Excalidraw's public
+# server https://oss-collab.excalidraw.com).
+# Build: docker build --build-arg VITE_APP_WS_SERVER_URL=ws://localhost:44749 -t excalidraw:fork-collab .
+ARG VITE_APP_WS_SERVER_URL
+ENV VITE_APP_WS_SERVER_URL=$VITE_APP_WS_SERVER_URL
+
 RUN npm_config_target_arch=${TARGETARCH} yarn build:app:docker
 
 FROM nginx:stable-alpine-slim@sha256:2c605dbeab79a6b2a63340474fe58119d0ef95bdc4b1f41df0aa689659b3d13b
