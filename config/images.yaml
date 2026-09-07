@@ -12,7 +12,7 @@ client:
   # Local build tag (not pushed to a registry).
   tag: excalidraw:fork-collab
   # Digest of the last built image (docker inspect --format '{{index .RepoDigests 0}}').
-  digest: sha256:6d3e4dc7d41d1bef5a940d7b24a2a739f4f0e5a96d8a16b8cefd5749ce296d32
+  digest: sha256:c2d913538fb35803ab5173901af678bc654b756addec456aa837d54946c681e5
   source:
     upstream: https://github.com/excalidraw/excalidraw.git
     fork: https://github.com/tobiashochguertel/excalidraw.git
@@ -22,9 +22,11 @@ client:
     upstream_commit: "f1a79b7"
     fork_commit: "6e06595"
   # Build args baked into the image at build time (Vite inlines them;
-  # process env wins over .env.production).
+  # process env wins over .env.production). Quoted: YAML would parse
+  # "true" as a boolean.
   build_args:
     VITE_APP_WS_SERVER_URL: ws://localhost:44749
+    VITE_APP_DISABLE_PLUS: "true"
   # Loopback host port the app is published on (services repo .env).
   port: 44186
 

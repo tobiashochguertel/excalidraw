@@ -90,6 +90,7 @@ import {
 import {
   FIREBASE_STORAGE_PREFIXES,
   isExcalidrawPlusSignedUser,
+  IS_PLUS_ENABLED,
   STORAGE_KEYS,
   SYNC_BROWSER_TABS_TIMEOUT,
 } from "./app_constants";
@@ -100,6 +101,7 @@ import Collab, {
   userToFollowAtom,
 } from "./collab/Collab";
 import { AppFooter } from "./components/AppFooter";
+import { PlusEnabled } from "./components/PlusEnabled";
 import { AppMainMenu } from "./components/AppMainMenu";
 import { AppWelcomeScreen } from "./components/AppWelcomeScreen";
 import {
@@ -958,8 +960,9 @@ const ExcalidrawWrapper = () => {
             toggleTheme: true,
             export: {
               onExportToBackend,
-              renderCustomUI: excalidrawAPI
-                ? (elements, appState, files) => {
+              renderCustomUI:
+                IS_PLUS_ENABLED && excalidrawAPI
+                  ? (elements, appState, files) => {
                     return (
                       <ExportToExcalidrawPlus
                         elements={elements}
@@ -1000,9 +1003,11 @@ const ExcalidrawWrapper = () => {
           return (
             <div className="excalidraw-ui-top-right">
               {excalidrawAPI?.getEditorInterface().formFactor === "desktop" && (
-                <ExcalidrawPlusPromoBanner
-                  isSignedIn={isExcalidrawPlusSignedUser}
-                />
+                <PlusEnabled>
+                  <ExcalidrawPlusPromoBanner
+                    isSignedIn={isExcalidrawPlusSignedUser}
+                  />
+                </PlusEnabled>
               )}
 
               {collabError.message && <CollabError collabError={collabError} />}
@@ -1246,14 +1251,16 @@ const ExcalidrawWrapper = () => {
                 );
               },
             },
-            ...(isExcalidrawPlusSignedUser
-              ? [
-                  {
-                    ...ExcalidrawPlusAppCommand,
-                    label: "Sign in / Go to Excalidraw+",
-                  },
-                ]
-              : [ExcalidrawPlusCommand, ExcalidrawPlusAppCommand]),
+            ...(IS_PLUS_ENABLED
+              ? isExcalidrawPlusSignedUser
+                ? [
+                    {
+                      ...ExcalidrawPlusAppCommand,
+                      label: "Sign in / Go to Excalidraw+",
+                    },
+                  ]
+                : [ExcalidrawPlusCommand, ExcalidrawPlusAppCommand]
+              : []),
 
             {
               label: t("overwriteConfirm.action.excalidrawPlus.button"),
@@ -1304,7 +1311,7 @@ const ExcalidrawWrapper = () => {
 const ExcalidrawApp = () => {
   const isCloudExportWindow =
     window.location.pathname === "/excalidraw-plus-export";
-  if (isCloudExportWindow) {
+  if (isCloudExportWindow && IS_PLUS_ENABLED) {
     return <ExcalidrawPlusIframeExport />;
   }
 

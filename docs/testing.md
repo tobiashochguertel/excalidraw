@@ -29,6 +29,8 @@ Environment overrides:
 
 ## Coverage
 
+### Collaboration (`collaboration.spec.ts`)
+
 | Test | Verifies |
 |------|----------|
 | Tab B joins room started by tab A | Room link flow, both tabs share the `#room=` hash |
@@ -36,6 +38,14 @@ Environment overrides:
 | Drawing on B visible on A | Sync works in both directions |
 | Background tab catches up on focus | Update is delivered promptly once the tab regains focus |
 | Scene present when joining an existing room | New joiner receives the current scene (`fetchScene`) |
+
+### No Excalidraw+ marketing (`marketing.spec.ts`)
+
+| Test | Verifies |
+|------|----------|
+| No plus banner | `.plus-banner` and "Excalidraw+" text absent |
+| Welcome screen has no sign-up | Core entries remain, "Sign up" marketing link gone |
+| No plus links anywhere | No `<a>` points at `plus.excalidraw.com` (banner/welcome/menu/help) |
 
 Sync latency is asserted against `EXCALIDRAW_SYNC_THRESHOLD_MS` and
 logged per run (loopback measured ≈ 300 ms).

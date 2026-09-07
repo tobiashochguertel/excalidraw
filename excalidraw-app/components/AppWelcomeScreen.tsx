@@ -5,6 +5,7 @@ import { WelcomeScreen } from "@excalidraw/excalidraw/index";
 import React from "react";
 
 import { isExcalidrawPlusSignedUser } from "../app_constants";
+import { PlusEnabled } from "./PlusEnabled";
 
 export const AppWelcomeScreen: React.FC<{
   onCollabDialogOpen: () => any;
@@ -65,15 +66,17 @@ export const AppWelcomeScreen: React.FC<{
             />
           )}
           {!isExcalidrawPlusSignedUser && (
-            <WelcomeScreen.Center.MenuItemLink
-              href={`${
-                import.meta.env.VITE_APP_PLUS_LP
-              }/plus?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenGuest`}
-              shortcut={null}
-              icon={loginIcon}
-            >
-              {t("labels.signUp")}
-            </WelcomeScreen.Center.MenuItemLink>
+            <PlusEnabled>
+              <WelcomeScreen.Center.MenuItemLink
+                href={`${
+                  import.meta.env.VITE_APP_PLUS_LP
+                }/plus?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenGuest`}
+                shortcut={null}
+                icon={loginIcon}
+              >
+                {t("labels.signUp")}
+              </WelcomeScreen.Center.MenuItemLink>
+            </PlusEnabled>
           )}
         </WelcomeScreen.Center.Menu>
       </WelcomeScreen.Center>

@@ -41,7 +41,21 @@ app = typer.Typer(
 )
 
 REPO_ROOT = Path.cwd()
-DOCKERFILE = "Dockerfile"
+
+# Files this fork intentionally modifies (everything else must match
+# upstream). Dockerfile: collab URL + no-plus build args; the rest:
+# the VITE_APP_DISABLE_PLUS marketing-UI flag.
+PATCHED_FILES = {
+    "Dockerfile",
+    "excalidraw-app/App.tsx",
+    "excalidraw-app/app_constants.ts",
+    "excalidraw-app/components/AppFooter.tsx",
+    "excalidraw-app/components/AppMainMenu.tsx",
+    "excalidraw-app/components/AppWelcomeScreen.tsx",
+    "excalidraw-app/vite-env.d.ts",
+    "packages/excalidraw/components/HelpDialog.tsx",
+    "packages/excalidraw/vite-env.d.ts",
+}
 
 
 def _git(args: list[str], check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -49,16 +63,20 @@ def _git(args: list[str], check: bool = True) -> subprocess.CompletedProcess[str
     return subprocess.run(["git", *args], check=check, text=True, capture_output=True)
 
 
-def _only_dockerfile_differs() -> bool:
-    result = _git(["diff", "--name-only", "upstream/master"], check=False)
-    changed = [line for line in result.stdout.splitlines() if line.strip()]
-    if changed == [DOCKERFILE]:
-        console.print(f"[green]ok: {DOCKERFILE} is the only modified file[/green]")
+def _only_patched_files_differ() -> bool:
+    # Compare only MODIFIED files: files added by the fork (scripts/,
+    # docs/, e2e/, ...) are expected and would otherwise always fail the
+    # check. Modified files must all be in PATCHED_FILES.
+    result = _git(["diff", "--name-only", "--diff-filter=M", "upstream/master"], check=False)
+    changed = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    if changed <= PATCHED_FILES:
+        console.print("[green]ok: only the fork's patched files are modified[/green]")
         return True
     console.print(
-        f"[red]unexpected modified files: {', '.join(changed) or '(none)'} "
-        f"(expected only {DOCKERFILE})[/red]"
+        f"[red]unexpected modified files: {', '.join(sorted(changed - PATCHED_FILES)) or '(none)'} "
+        f"(expected only {', '.join(sorted(PATCHED_FILES))})[/red]"
     )
+    console.print("[red]this usually means upstream drifted — run `mise run sync-upstream`[/red]")
     return False
 
 
@@ -68,9 +86,9 @@ def _fetch_upstream() -> None:
 
 @app.command()
 def check() -> None:
-    """Fetch upstream master and verify only the Dockerfile differs (no rebase)."""
+    """Fetch upstream master and verify only the patched files differ (no rebase)."""
     _fetch_upstream()
-    if not _only_dockerfile_differs():
+    if not _only_patched_files_differ():
         raise typer.Exit(1)
 
 
@@ -88,7 +106,7 @@ def main(ctx: typer.Context) -> None:
         console.print("[red]rebase failed — resolve conflicts, then re-run check[/red]")
         console.print(rebase.stdout or rebase.stderr)
         raise typer.Exit(1)
-    if not _only_dockerfile_differs():
+    if not _only_patched_files_differ():
         console.print("[red]rebase applied but the diff changed — investigate[/red]")
         raise typer.Exit(1)
     console.print("[green]fork is up to date with upstream/master[/green]")

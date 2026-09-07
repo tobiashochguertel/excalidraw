@@ -59,3 +59,8 @@ export const COOKIES = {
 export const isExcalidrawPlusSignedUser = document.cookie.includes(
   COOKIES.AUTH_STATE_COOKIE,
 );
+
+// Fork: build with VITE_APP_DISABLE_PLUS=true to remove the Excalidraw+
+// marketing UI (banner, sign-up links, command palette entries,
+// export-to-plus, blog link) from self-hosted builds.
+export const IS_PLUS_ENABLED = import.meta.env.VITE_APP_DISABLE_PLUS !== "true";

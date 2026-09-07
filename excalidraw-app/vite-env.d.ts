@@ -38,6 +38,9 @@ interface ImportMetaEnv {
 
   VITE_APP_GIT_SHA: string;
 
+  // Fork: set to "true" to remove the Excalidraw+ marketing UI.
+  VITE_APP_DISABLE_PLUS?: string;
+
   MODE: string;
 
   DEV: string;
