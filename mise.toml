@@ -13,3 +13,7 @@ run = "uv run --script scripts/verify-collab.py"
 [tasks.sync-upstream]
 description = "Rebase the fork onto upstream master (only Dockerfile may differ)"
 run = "uv run --script scripts/sync-upstream.py"
+
+[tasks.test-e2e]
+description = "Run Playwright e2e tests against the deployed Excalidraw stack (app + room relay)"
+run = "cd e2e && bun run test"
