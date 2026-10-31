@@ -29,7 +29,7 @@ Environment overrides:
 
 ## Coverage
 
-### Collaboration (`collaboration.spec.ts`)
+### Collaboration (`collaboration.pw.ts`)
 
 | Test | Verifies |
 |------|----------|
@@ -39,7 +39,7 @@ Environment overrides:
 | Background tab catches up on focus | Update is delivered promptly once the tab regains focus |
 | Scene present when joining an existing room | New joiner receives the current scene (`fetchScene`) |
 
-### No Excalidraw+ marketing (`marketing.spec.ts`)
+### No Excalidraw+ marketing (`marketing.pw.ts`)
 
 | Test | Verifies |
 |------|----------|

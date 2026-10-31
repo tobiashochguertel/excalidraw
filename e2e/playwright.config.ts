@@ -6,6 +6,8 @@ const BASE_URL = process.env.EXCALIDRAW_URL ?? "http://localhost:44186";
 
 export default defineConfig({
   testDir: "./tests",
+  // .pw.ts so vitest's *.spec.ts glob doesn't pick up Playwright tests
+  testMatch: /\.pw\.ts$/,
   timeout: 90_000,
   expect: { timeout: 10_000 },
   // Collaboration tests share two tabs in one room — keep them serial.
