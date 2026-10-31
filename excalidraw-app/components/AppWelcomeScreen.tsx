@@ -5,6 +5,7 @@ import { WelcomeScreen } from "@excalidraw/excalidraw/index";
 import React from "react";
 
 import { isExcalidrawPlusSignedUser } from "../app_constants";
+
 import { PlusEnabled } from "./PlusEnabled";
 
 export const AppWelcomeScreen: React.FC<{

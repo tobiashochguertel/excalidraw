@@ -1,4 +1,6 @@
+/* eslint-disable no-console -- Playwright test logging */
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
+
 import {
   SYNC_THRESHOLD_MS,
   canvasPixels,
@@ -21,7 +23,9 @@ async function newTabs(browser: import("@playwright/test").Browser): Promise<{
   a: Page;
   b: Page;
 }> {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+  });
   return { ctx, a: await ctx.newPage(), b: await ctx.newPage() };
 }
 
@@ -37,7 +41,9 @@ test.describe("excalidraw-room collaboration", () => {
     await ctx.close();
   });
 
-  test("drawing on A becomes visible on B without any interaction", async ({ browser }) => {
+  test("drawing on A becomes visible on B without any interaction", async ({
+    browser,
+  }) => {
     const { ctx, a, b } = await newTabs(browser);
 
     await openApp(a);
@@ -70,7 +76,9 @@ test.describe("excalidraw-room collaboration", () => {
     await ctx.close();
   });
 
-  test("drawing on B becomes visible on A (both directions)", async ({ browser }) => {
+  test("drawing on B becomes visible on A (both directions)", async ({
+    browser,
+  }) => {
     const { ctx, a, b } = await newTabs(browser);
 
     await openApp(a);
@@ -90,7 +98,9 @@ test.describe("excalidraw-room collaboration", () => {
     await ctx.close();
   });
 
-  test("background tab catches up after regaining focus", async ({ browser }) => {
+  test("background tab catches up after regaining focus", async ({
+    browser,
+  }) => {
     // Models the manual report "drawings appear only after I click the
     // menu of the second window": browsers throttle hidden tabs' rAF,
     // so React defers the paint until the tab is focused again. The
@@ -110,7 +120,9 @@ test.describe("excalidraw-room collaboration", () => {
     await drawRectangle(a);
     await b.waitForTimeout(1500);
     const bWhileHidden = await canvasPixels(b);
-    console.log(`appeared while tab hidden: ${!bWhileHidden.equals(bHiddenPixels)}`);
+    console.log(
+      `appeared while tab hidden: ${!bWhileHidden.equals(bHiddenPixels)}`,
+    );
 
     // Regaining focus must flush the pending update promptly.
     await b.bringToFront();
@@ -119,7 +131,9 @@ test.describe("excalidraw-room collaboration", () => {
     await ctx.close();
   });
 
-  test("scene already present when joining an existing room", async ({ browser }) => {
+  test("scene already present when joining an existing room", async ({
+    browser,
+  }) => {
     const { ctx, a, b } = await newTabs(browser);
 
     await openApp(a);

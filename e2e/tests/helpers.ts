@@ -64,7 +64,10 @@ export async function joinRoom(page: Page, roomLink: string): Promise<void> {
 }
 
 export async function drawRectangle(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "Rectangle", exact: true }).first().click();
+  await page
+    .getByRole("button", { name: "Rectangle", exact: true })
+    .first()
+    .click();
   await page.mouse.move(500, 400);
   await page.mouse.down();
   await page.mouse.move(850, 650, { steps: 10 });
@@ -86,7 +89,9 @@ export async function waitForCanvasChange(
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     const current = await canvasPixels(page);
-    if (!current.equals(baseline)) return;
+    if (!current.equals(baseline)) {
+      return;
+    }
     await page.waitForTimeout(300);
   }
   throw new Error(`canvas did not change within ${timeoutMs}ms`);
@@ -99,7 +104,10 @@ export async function welcomeScreenGone(page: Page): Promise<boolean> {
 }
 
 // Waits until the welcome screen disappears without any interaction.
-export async function waitForWelcomeScreenGone(page: Page, timeoutMs: number): Promise<void> {
+export async function waitForWelcomeScreenGone(
+  page: Page,
+  timeoutMs: number,
+): Promise<void> {
   await page.waitForFunction(
     () => document.querySelectorAll(".welcome-screen-menu-item").length === 0,
     { timeout: timeoutMs },

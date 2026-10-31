@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+
 import { openApp, dismissWelcomeScreen } from "./helpers";
 
 // The fork is built with VITE_APP_DISABLE_PLUS=true — the Excalidraw+
@@ -15,7 +16,9 @@ test.describe("no Excalidraw+ marketing", () => {
     await openApp(page);
     // Core entries remain, the "Sign up" marketing link is gone.
     await expect(
-      page.locator(".welcome-screen-menu-item").filter({ hasText: "Live collaboration" }),
+      page
+        .locator(".welcome-screen-menu-item")
+        .filter({ hasText: "Live collaboration" }),
     ).toHaveCount(1);
     await expect(
       page.locator(".welcome-screen-menu-item").filter({ hasText: "Sign up" }),
@@ -27,10 +30,11 @@ test.describe("no Excalidraw+ marketing", () => {
     await dismissWelcomeScreen(page);
     // Covers the banner, welcome screen, main menu and help dialog links
     // (wherever they would be rendered).
-    const plusLinks = await page.evaluate(() =>
-      [...document.querySelectorAll("a")].filter((a) =>
-        (a.getAttribute("href") || "").includes("plus.excalidraw.com"),
-      ).length,
+    const plusLinks = await page.evaluate(
+      () =>
+        [...document.querySelectorAll("a")].filter((a) =>
+          (a.getAttribute("href") || "").includes("plus.excalidraw.com"),
+        ).length,
     );
     expect(plusLinks).toBe(0);
   });
